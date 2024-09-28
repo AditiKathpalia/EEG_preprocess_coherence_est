@@ -1,0 +1,30 @@
+## Preprocessing steps for raw EEG data obtained.
+
+EEGLab software [1] was used. The data was already in EEGLab format.
+
+Preprocessing was done in the following manner using the eeglab software in MATLAB:
+	(a) Remove any channels in excess of the required 19 electrodes, which are common across all subjects
+	(b) Downsample the data to 250 Hz if the original sampling rate is 1000 Hz (by taking every 4th sample)
+	(c) Take the first 10 minutes of recording for the first visits of the subjects (as these are much 
+	    longer than 10 mins; patients were given luminescence after 10 mins). For the second visits of the 
+	    subjects, recordings are already around 10 mins and whole can be used. Remove the first and last 
+	    30s of data from this (as these will contain more artifacts). After subject no. 288, the recordings
+		of the second visit were longer, these were also taken up to first 10 minutes.
+	(d) Set EEG recordings to average reference
+	(e) Bandpass filter the data, 1-40 Hz
+	(f) Use 'clean_windows' function in eeglab to remove segments of data with artifacts. 
+		This function cuts segments from the data which contain high-power artifacts. Specifically,
+		only windows are retained which have less than a certain fraction of "bad" channels, where a channel
+		is bad in a window if its power is above or below a given upper/lower threshold (in standard 
+		deviations from a robust estimate of the EEG power distribution in the channel).
+		Parameters are set such that the maximum number of bad channels allowed is 0.2 times the total no. of
+		channels present in the data. Window length is set to 2s (such that every 2s of data is continuous). 
+		Other parameters are set to default.
+
+Code:
+Run Main_preprocessing.m to process the data of all subjects.
+Rest of the scripts in the folder are functions.
+
+References:
+
+[1] Delorme, A., & Makeig, S. (2004). EEGLAB: an open source toolbox for analysis of single-trial EEG dynamics including independent component analysis. Journal of neuroscience methods, 134(1), 9-21.
